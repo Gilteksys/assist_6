@@ -1,0 +1,18 @@
+# .env
+.env
+
+# Arquivos Python compilados
+*.pyc
+__pycache__/
+
+# Ambiente virtual
+venv/
+
+# Arquivos de banco de dados
+*.db
+
+# Arquivos específicos de sistema
+.DS_Store
+
+# Migrações
+migrations/
