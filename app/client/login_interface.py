@@ -77,7 +77,7 @@ class LoginSignupUI:
                     self.txt_password_login,
                     ft.ElevatedButton(
                         text="Entrar",
-                        width=300,
+                        width=600,
                         on_click=self.login,
                         style=ft.ButtonStyle(
                             color=ft.colors.WHITE,

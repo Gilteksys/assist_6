@@ -1,6 +1,6 @@
 # app/services/user_service.py
 from app.models.user import User
-from app.extensions import db
+from app.appcore.extensions import db
 
 class UserService:
     @staticmethod
