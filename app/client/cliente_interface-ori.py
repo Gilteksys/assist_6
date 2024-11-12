@@ -5,10 +5,10 @@ from urllib.parse import urljoin
 class ClienteUI:
     def __init__(self, page: ft.Page):
         self.page = page
-        self.page.title = "Sistema de Cadastro de Clientes"
+        self.page.title = "Cadastro de Cliente"
         self.page.vertical_alignment = ft.MainAxisAlignment.CENTER
         self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-        self.page.bgcolor = "#f5f5f5"  # Cor de fundo mais suave
+        self.page.bgcolor = ft.colors.WHITE
         self.page.padding = 20
         
         # URL base da API
@@ -17,98 +17,64 @@ class ClienteUI:
         self.setup_ui()
         
     def setup_ui(self):
-        # Cabeçalho com logo/ícone
-        header = ft.Row(
-            controls=[
-                ft.Icon(name=ft.icons.PEOPLE_ALT_ROUNDED, size=40, color=ft.colors.BLUE_600),
-                ft.Text("Sistema de Gerenciamento de Clientes", 
-                       size=28, 
-                       weight=ft.FontWeight.BOLD,
-                       color=ft.colors.BLUE_600)
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-        )
-
-        # Campos do formulário com layout melhorado
+        # Campos do formulário
         self.txt_nome = ft.TextField(
-            label="Nome do Cliente",
+            label="Nome",
             width=400,
-            border_color=ft.colors.BLUE_600,
-            prefix_icon=ft.icons.PERSON,
-            hint_text="Digite o nome completo"
+            border_color=ft.colors.BLUE_400,
+            prefix_icon=ft.icons.BUSINESS
         )
         
         self.txt_documento = ft.TextField(
-            label="CPF/CNPJ",
+            label="Documento",
             width=400,
-            border_color=ft.colors.BLUE_600,
-            prefix_icon=ft.icons.BADGE,
-            hint_text="Digite o documento"
+            border_color=ft.colors.BLUE_400,
+            prefix_icon=ft.icons.STORE
         )
         
         self.txt_contato = ft.TextField(
-            label="Telefone",
+            label="Contato",
             width=400,
-            border_color=ft.colors.BLUE_600,
-            prefix_icon=ft.icons.PHONE,
-            hint_text="(00) 00000-0000"
+            border_color=ft.colors.BLUE_400,
+            prefix_icon=ft.icons.NUMBERS
         )
         
         self.txt_endereco = ft.TextField(
-            label="Endereço Completo",
+            label="Endereço",
             width=400,
-            border_color=ft.colors.BLUE_600,
-            prefix_icon=ft.icons.LOCATION_ON,
-            hint_text="Rua, número, bairro, cidade"
+            border_color=ft.colors.BLUE_400,
+            prefix_icon=ft.icons.PHONE
         )
         
         self.txt_email = ft.TextField(
-            label="E-mail",
+            label="Email",
             width=400,
-            border_color=ft.colors.BLUE_600,
-            prefix_icon=ft.icons.EMAIL,
-            hint_text="cliente@email.com"
-        )
+            border_color=ft.colors.BLUE_400,
+            prefix_icon=ft.icons.EMAIL
+        )        
 
-        # Botões com estilo melhorado
-        buttons_row = ft.Row(
-            controls=[
-                ft.ElevatedButton(
-                    text="Limpar Campos",
-                    width=190,
-                    on_click=lambda _: self.clear_form(),
-                    style=ft.ButtonStyle(
-                        color=ft.colors.BLUE_600,
-                        bgcolor=ft.colors.WHITE,
-                        side=ft.BorderSide(width=2, color=ft.colors.BLUE_600),
-                    )
-                ),
-                ft.ElevatedButton(
-                    text="Cadastrar Cliente",
-                    width=190,
-                    on_click=self.register_assistencia,
-                    style=ft.ButtonStyle(
-                        color=ft.colors.WHITE,
-                        bgcolor=ft.colors.BLUE_600,
-                    )
-                ),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
-            spacing=20
-        )
 
-        # Container principal com visual renovado
+        # Container principal
         self.register_container = ft.Container(
             content=ft.Column(
                 controls=[
-                    header,
-                    ft.Divider(height=2, color=ft.colors.BLUE_200),
+                    ft.Text("Cadastro de Clinte", 
+                           size=24, 
+                           weight=ft.FontWeight.BOLD),
                     self.txt_nome,
                     self.txt_documento,
                     self.txt_contato,                                        
                     self.txt_endereco,
                     self.txt_email,
-                    buttons_row
+                    ft.ElevatedButton(
+                        text="Cadastrar",
+                        width=400,
+                        on_click=self.register_assistencia,
+                        style=ft.ButtonStyle(
+                            color=ft.colors.WHITE,
+                            bgcolor=ft.colors.BLUE_400,
+                        )
+                    ),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=20
@@ -119,10 +85,8 @@ class ClienteUI:
             shadow=ft.BoxShadow(
                 spread_radius=1,
                 blur_radius=15,
-                color=ft.colors.BLUE_GREY_200,
-                offset=ft.Offset(0, 2)
-            ),
-            width=500
+                color=ft.colors.BLUE_GREY_100,
+            )
         )
 
         # Adiciona o container à página
@@ -150,8 +114,9 @@ class ClienteUI:
             'email': self.txt_email.value           
         }
 
+        # Validação dos campos obrigatórios
         if not all([data['nome'], data['contato']]):
-            self.show_alert("Por favor, preencha pelo menos o nome e contato do cliente!")
+            self.show_alert("Preencha todos os campos obrigatórios!")
             return
 
         try:
@@ -160,14 +125,16 @@ class ClienteUI:
                 json=data
             )
             
+            # Exibe o status e conteúdo da resposta para depuração
             print("Status Code:", response.status_code)
             print("Response JSON:", response.json())
             
             if response.status_code == 201:
                 self.show_alert("Cliente cadastrado com sucesso!", ft.colors.GREEN)
+                # Limpa o formulário após cadastro bem-sucedido
                 self.clear_form()
             else:
-                error_msg = response.json().get('error','Erro ao cadastrar cliente')
+                error_msg = response.json().get('error','Erro ao cadastrar Cliente')
                 self.show_alert(error_msg)
         except requests.RequestException as e:
             print(f"Erro de conexão: {str(e)}")

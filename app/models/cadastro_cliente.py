@@ -13,8 +13,7 @@ class CadastroCliente(db.Model):
     endereco = db.Column(db.String(100), nullable=True)
     email = db.Column(db.String(150), nullable=True, unique=True)  # Campo de email
     criado_em = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-
+    ordens_servico = db.relationship('OrdemServico', backref='cadastro_cliente', lazy=True)
 
     def validate_email(self, email):
         try:
@@ -35,7 +34,8 @@ class CadastroCliente(db.Model):
             'email': self.email,  
             'documento': self.documento,
             'endereco': self.endereco,
-            'criado_em': self.criado_em.isoformat(),           
+            'criado_em': self.criado_em.isoformat(),
+            'ordens_servico': [ordem.to_dict() for ordem in self.ordens_servico]           
         }
 
 
